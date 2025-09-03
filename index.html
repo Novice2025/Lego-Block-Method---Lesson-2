@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lego Block Method - Daby</title>
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Define the custom colors in Tailwind config for easy use */
+        :root {
+            --dark-background: #141414;
+            --yellow-primary: #ffc700;
+            --red-accent: #E50914;
+            --green-accent: #22c55e;
+            --blue-accent: #3b82f6; /* A new color for the "at home" section */
+            --purple-accent: #8b5cf6; /* New color for the educational background section */
+            --yellow-accent: #ffc700;
+            --orange-accent: #f97316; /* New color for work experience section */
+            --teal-accent: #14b8a6; /* New color for expressing opinion section */
+        }
+
+        /* Custom glow effect for the header on hover */
+        .title-glow-hover:hover {
+            text-shadow: 0 0 5px var(--yellow-primary), 0 0 10px var(--yellow-primary), 0 0 15px var(--yellow-primary);
+            transition: text-shadow 0.3s ease-in-out;
+        }
+
+        /* Define the custom highlight class */
+        .article-highlight {
+            color: var(--yellow-primary);
+            font-weight: 700;
+            font-style: italic;
+        }
+        
+        /* Vertical red bar for content blocks */
+        .content-block-red::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 5px;
+            background-color: var(--red-accent);
+            border-radius: 4px 0 0 4px;
+        }
+
+        /* Vertical green bar for new content blocks */
+        .content-block-green::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 5px;
+            background-color: var(--green-accent);
+            border-radius: 4px 0 0 4px;
+        }
+
+        /* Vertical blue bar for new content blocks */
+        .content-block-blue::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 5px;
+            background-color: var(--blue-accent);
+            border-radius: 4px 0 0 4px;
+        }
+
+        /* Vertical purple bar for educational background section */
+        .content-block-purple::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 5px;
+            background-color: var(--purple-accent);
+            border-radius: 4px 0 0 4px;
+        }
+
+        /* Vertical orange bar for the new work experience section */
+        .content-block-orange::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 5px;
+            background-color: var(--orange-accent); /* Tailwind's orange-500 */
+            border-radius: 4px 0 0 4px;
+        }
+        
+        /* Vertical teal bar for expressing opinion section */
+        .content-block-teal::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 5px;
+            background-color: var(--teal-accent); /* Tailwind's teal-500 */
+            border-radius: 4px 0 0 4px;
+        }
+
+        /* Hover effects for red content blocks */
+        .content-block-hover-red:hover {
+            background-color: rgba(229, 9, 20, 0.1); /* Semi-transparent red */
+            box-shadow: 0 0 15px var(--yellow-primary); /* Glowing yellow shadow */
+            transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        /* Hover effects for green content blocks */
+        .content-block-hover-green:hover {
+            background-color: rgba(34, 197, 94, 0.1); /* Semi-transparent green */
+            box-shadow: 0 0 15px var(--yellow-primary); /* Glowing yellow shadow */
+            transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        /* Hover effects for blue content blocks */
+        .content-block-hover-blue:hover {
+            background-color: rgba(59, 130, 246, 0.1); /* Semi-transparent blue */
+            box-shadow: 0 0 15px var(--yellow-primary); /* Glowing yellow shadow */
+            transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        /* Hover effects for purple content blocks */
+        .content-block-hover-purple:hover {
+            background-color: rgba(139, 92, 246, 0.1); /* Semi-transparent purple */
+            box-shadow: 0 0 15px var(--yellow-primary); /* Glowing yellow shadow */
+            transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        /* Hover effects for orange content blocks */
+        .content-block-hover-orange:hover {
+            background-color: rgba(249, 115, 22, 0.1); /* Semi-transparent orange */
+            box-shadow: 0 0 15px var(--yellow-primary); /* Glowing yellow shadow */
+            transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        
+        /* Hover effects for teal content blocks */
+        .content-block-hover-teal:hover {
+            background-color: rgba(20, 184, 166, 0.1); /* Semi-transparent teal */
+            box-shadow: 0 0 15px var(--yellow-primary); /* Glowing yellow shadow */
+            transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        /* Play button hover effect */
+        .play-button:hover {
+            color: var(--yellow-primary);
+            transition: color 0.3s ease-in-out;
+        }
+
+        /* Pulsing animation keyframes */
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.05);
+                opacity: 0.8;
+            }
+        }
+
+        /* Animated class for pulsing effect */
+        .pulse-text {
+            animation: pulse 1.5s infinite;
+        }
+        
+        /* Drag and Drop and Fill in the Blanks Specific Styles */
+        .draggable {
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+        .draggable:hover {
+            background-color: #ffc700;
+            color: #141414;
+        }
+        .dropzone {
+            min-width: 100px;
+            min-height: 40px;
+            border: 2px dashed #ffc700;
+            background-color: #1a1a1a;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+            text-align: center;
+        }
+        .filled-dropzone {
+            background-color: #ffc700;
+            color: #141414;
+            font-weight: bold;
+            border: 2px solid #ffc700;
+        }
+        
+        .correct-answer {
+            color: #22c55e;
+        }
+        
+        .incorrect-answer {
+            color: #E50914;
+        }
+
+        /* Style for the new block of words */
+        .word-block {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+        .word-block-item {
+            background-color: #262626; /* neutral-800 */
+            color: #f97316; /* orange-500 */
+            padding: 0.75rem 1.25rem;
+            border-radius: 9999px; /* full rounded */
+            font-weight: 700; /* bold */
+            border: 2px solid #f97316;
+            transition: all 0.3s ease-in-out;
+            text-align: center;
+        }
+        .word-block-item:hover {
+            transform: scale(1.05);
+            background-color: #f97316;
+            color: #141414;
+        }
+    </style>
+</head>
+
+<body class="bg-[#141414] text-white font-sans p-8">
+
+    <!-- Header Section -->
+    <header class="text-center mb-16">
+        <h1 class="text-5xl font-bold text-[#ffc700] title-glow-hover mb-2 md:text-6xl">Lego Block Method - Daby</h1>
+        <h2 class="text-xl text-white opacity-70 md:text-2xl">Your professional English hub - Lesson 2</h2>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-4xl mx-auto space-y-8">
+
+        <!-- Introductory Section -->
+        <section class="p-6 rounded-xl border-2 border-[#E50914] bg-white bg-opacity-5">
+            <h3 class="text-2xl font-bold mb-4 text-white">Introduction to Professional English</h3>
+            <p class="text-lg leading-relaxed text-gray-200">
+                In today's globalized world, professional English is more than just communication; it's a strategic asset. Our "Lego Block Method" helps you build this skill set piece by piece, focusing on clarity, conciseness, and confidence in every interaction.
+            </p>
+        </section>
+
+        <!-- Content Block 1 -->
+        <section class="content-block relative p-6 rounded-xl bg-gray-900 bg-opacity-70 content-block-red content-block-hover-red">
+            <h3 class="text-2xl font-bold mb-4 text-white">Building Your Vocabulary</h3>
+            <p class="text-lg leading-relaxed text-gray-200">
+                A strong professional vocabulary is crucial. Focus on learning <span class="article-highlight">industry-specific terms</span> and formal expressions. It's not about knowing every word, but knowing the right words for the right moment.
+                <button class="play-button text-[#E50914] ml-2 text-2xl"><i class="fas fa-play"></i></button>
+            </p>
+        </section>
+
+        <!-- Content Block 2 -->
+        <section class="content-block relative p-6 rounded-xl bg-gray-900 bg-opacity-70 content-block-red content-block-hover-red">
+            <h3 class="text-2xl font-bold mb-4 text-white">Mastering Pronunciation</h3>
+            <p class="text-lg leading-relaxed text-gray-200">
+                Clear pronunciation is key to being understood. Pay close attention to the <span class="pulse-text font-bold">rhythm and stress of English</span>.
+                <button class="play-button text-[#E50914] ml-2 text-2xl"><i class="fas fa-play"></i></button>
+                Practice speaking slowly and deliberately to improve your clarity.
+            </p>
+        </section>
+
+        <!-- Content Block 3 -->
+        <section class="content-block relative p-6 rounded-xl bg-gray-900 bg-opacity-70 content-block-red content-block-hover-red">
+            <h3 class="text-2xl font-bold mb-4 text-white">Structuring Your Sentences</h3>
+            <p class="text-lg leading-relaxed text-gray-200">
+                Use a clear structure to make your message impactful. Start with your main point, then provide supporting details. This is the <span class="article-highlight">core of the Lego Block Method</span>, stacking ideas logically.
+                <button class="play-button text-[#E50914] ml-2 text-2xl"><i class="fas fa-play"></i></button>
+            </p>
+        </section>
+
+        <!-- Green Content Block -->
+        <section class="content-block relative p-6 rounded-xl bg-gray-900 bg-opacity-70 content-block-green content-block-hover-green">
+            <h3 class="text-2xl font-bold mb-4 text-white">Using "at work"</h3>
+            <p class="text-lg leading-relaxed text-gray-200 mb-2">
+                <span class="font-bold text-[#ffc700]">[POR]</span> "Na minha empresa" ou "no meu trabalho" em inglês se traduzem para <span class="article-highlight">"at work."</span> Essa é uma expressão fixa e a forma mais natural de se referir ao local de trabalho. Não se deve traduzir literalmente "in my company" pois soa estranho para falantes nativos.
+            </p>
+            <p class="text-lg leading-relaxed text-gray-200 mb-4">
+                <span class="font-bold text-[#ffc700]">[ENG]</span> A common mistake for Portuguese speakers is to translate "na minha empresa" literally as "in my company." The correct and more natural English phrase is <span class="article-highlight">"at work."</span> It's a simple change that makes a big difference in sounding like a native speaker. Remember this phrase for all professional contexts!
+            </p>
+            <ul class="list-disc list-inside space-y-2 text-gray-200">
+                <li><span class="font-bold">I have a meeting <span class="article-highlight">at work</span> tomorrow.</span> (Eu tenho uma reunião na minha empresa amanhã.)</li>
+                <li><span class="font-bold">She is very busy <span class="article-highlight">at work.</span></span> (Ela está muito ocupada na empresa.)</li>
+                <li><span class="font-bold">I met my best friend <span class="article-highlight">at work.</span></span> (Eu conheci meu melhor amigo na empresa.)</li>
+            </ul>
+        </section>
+
+        <!-- Blue Content Block -->
+        <section class="content-block relative p-6 rounded-xl bg-gray-900 bg-opacity-70 content-block-blue content-block-hover-blue">
+            <h3 class="text-2xl font-bold mb-4 text-white">Using "at home"</h3>
+            <p class="text-lg leading-relaxed text-gray-200 mb-2">
+                <span class="font-bold text-[#ffc700]">[POR]</span> Assim como "at work," a expressão <span class="article-highlight">"at home"</span> é a forma correta e natural de dizer "em casa" ou "na minha casa." Evite usar "in my house" em contextos gerais, a menos que você esteja se referindo especificamente à estrutura física.
+            </p>
+            <p class="text-lg leading-relaxed text-gray-200 mb-4">
+                <span class="font-bold text-[#ffc700]">[ENG]</span> The phrase <span class="article-highlight">"at home"</span> is the correct and most natural way to say "in my house" or "at my place." It's used in general contexts to describe where you are. Translating literally to "in my house" can sound a bit unnatural to native speakers unless you are talking about the physical building itself.
+            </p>
+            <ul class="list-disc list-inside space-y-2 text-gray-200">
+                <li><span class="font-bold">I am <span class="article-highlight">at home</span> now.</span> (Estou em casa agora.)</li>
+                <li><span class="font-bold">She works from <span class="article-highlight">at home.</span></span> (Ela trabalha de casa.)</li>
+                <li><span class="font-bold">I usually relax <span class="article-highlight">at home</span> on weekends.</span> (Eu geralmente relaxo em casa nos fins de semana.)</li>
+            </ul>
+        </section>
+
+        <!-- Purple Content Block (Updated) -->
+        <section class="content-block relative p-6 rounded-xl bg-gray-900 bg-opacity-70 content-block-purple content-block-hover-purple">
+            <h3 class="text-2xl font-bold mb-4 text-white">Speaking About Your Educational Background</h3>
+            <p class="text-lg leading-relaxed text-gray-200 mb-2">
+                <span class="font-bold text-[#ffc700]">[POR]</span> Ao falar sobre sua educação, pense como um brasileiro na hora de listar seus diplomas, mas escreva como um americano. O segredo é ir além do que você estudou para focar em <span class="article-highlight">como você aplicou</span> esse conhecimento.
+            </p>
+            <p class="text-lg leading-relaxed text-gray-200 mb-4">
+                <span class="font-bold text-[#ffc700]">[ENG]</span> When talking about your education, the American approach is to **connect your academic history to your professional skills.** This makes your background more than just a list of degrees—it becomes a narrative that shows your value.
+            </p>
+            <div class="space-y-6">
+                <!-- IT Developer -->
+                <div class="p-4 rounded-lg bg-gray-800 border border-gray-700">
+                    <span class="text-lg font-bold text-white">IT Developer:</span>
+                    <p class="text-md leading-relaxed text-gray-300 mt-2">
+                        Your education is the foundation for your technical skills. Focus on the core concepts you mastered.
+                    </p>
+                    <p class="text-lg font-bold text-[#ffc700] mt-1">
+                        "I have a Bachelor of Science (B.S.) in Computer Science. In addition to an exchange program in Germany, I also earned a Master's in IT from USP. This combination of a strong technical foundation and a global perspective has equipped me to handle complex software challenges."
+                    </p>
+                    <p class="text-sm italic text-gray-400 mt-1">
+                        (Eu tenho uma graduação em Ciência da Computação. Além de um intercâmbio na Alemanha, também fiz um Mestrado em TI pela USP. Essa combinação de uma base técnica sólida e uma perspectiva global me preparou para lidar com desafios complexos de software.)
+                    </p>
+                    <div class="mt-4 border-t border-gray-700 pt-4">
+                        <span class="text-lg font-bold text-white">Explaining the Words & Prepositions:</span>
+                        <ul class="list-disc list-inside space-y-2 text-gray-300 mt-2">
+                            <li><span class="font-bold text-[#ffc700]">Bachelor of Science (B.S.):</span> A forma mais comum de se referir à graduação em áreas de ciência. Em inglês, você não "toma" (take) um curso, mas sim o "tem" (have) ou o "obteve" (earned).</li>
+                            <li><span class="font-bold text-[#ffc700]">Master's in IT:</span> "Master's" é a abreviação natural de Master's Degree (Mestrado). Usamos a preposição <span class="article-highlight">"in"</span> para especificar a área de estudo.</li>
+                            <li><span class="font-bold text-[#ffc700]">from USP:</span> A preposição <span class="article-highlight">"from"</span> é a mais usada para indicar a instituição de onde você obteve seu diploma (e.g., a university).</li>
+                            <li><span class="font-bold text-[#ffc700]">Studied Abroad:</span> Esta frase é a tradução mais direta e natural para "fiz intercâmbio" e "estudei fora."</li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Sales Manager -->
+                <div class="p-4 rounded-lg bg-gray-800 border border-gray-700">
+                    <span class="text-lg font-bold text-white">Sales Manager:</span>
+                    <p class="text-md leading-relaxed text-gray-300 mt-2">
+                        Your education is proof of your strategic mindset. Highlight how your studies prepared you for leadership and market analysis.
+                    </p>
+                    <p class="text-lg font-bold text-[#ffc700] mt-1">
+                        "I have a degree in Marketing with a specialization in digital consumer behavior. This specialization gave me the skills to develop and execute targeted sales strategies."
+                    </p>
+                    <p class="text-sm italic text-gray-400 mt-1">
+                        (Eu tenho uma graduação em Marketing com especialização em comportamento do consumidor digital. Essa especialização me deu as habilidades para desenvolver e executar estratégias de vendas direcionadas.)
+                    </p>
+                    <div class="mt-4 border-t border-gray-700 pt-4">
+                        <span class="text-lg font-bold text-white">Explaining the Words & Prepositions:</span>
+                        <ul class="list-disc list-inside space-y-2 text-gray-300 mt-2">
+                            <li><span class="font-bold text-[#ffc700]">I have a degree:</span> A forma mais comum e direta para dizer que você "tem" uma graduação ou diploma. "Hold" também é correto, mas "have" é mais frequente no dia a dia.</li>
+                            <li><span class="font-bold text-[#ffc700]">with a specialization in...:</span> Esta é uma forma natural de conectar seu diploma à sua área de foco. Em vez de traduzir literalmente "majored in", essa frase explica o que a sua especialização te capacitou a fazer.</li>
+                            <li><span class="font-bold text-[#ffc700]">in Marketing:</span> Usamos a preposição <span class="article-highlight">"in"</span> para indicar o campo ou a disciplina dos seus estudos.</li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Quality Director -->
+                <div class="p-4 rounded-lg bg-gray-800 border border-gray-700">
+                    <span class="text-lg font-bold text-white">Quality Director:</span>
+                    <p class="text-md leading-relaxed text-gray-300 mt-2">
+                        Your education is a testament to your commitment to excellence and process improvement. Mention specific methodologies you learned.
+                    </p>
+                    <p class="text-lg font-bold text-[#ffc700] mt-1">
+                        "I have a master's degree in Engineering with a specialization in Six Sigma. I also completed a six-month Spanish course in Colombia. My education focused on optimizing processes and implementing compliance standards, which is key to my work today."
+                    </p>
+                    <p class="text-sm italic text-gray-400 mt-1">
+                        (Eu tenho um mestrado em Engenharia com uma especialização em Six Sigma. Eu também fiz um curso de espanhol de seis meses na Colômbia. Minha formação se focou em otimizar processos e implementar padrões de conformidade, o que é fundamental para o meu trabalho hoje.)
+                    </p>
+                    <div class="mt-4 border-t border-gray-700 pt-4">
+                        <span class="text-lg font-bold text-[#ffc700]">Explaining the Words & Prepositions:</span>
+                        <ul class="list-disc list-inside space-y-2 text-gray-300 mt-2">
+                            <li><span class="font-bold text-[#ffc700]">I have a master's degree:</span> Uma forma muito natural e comum de dizer "eu tenho um mestrado".</li>
+                            <li><span class="font-bold text-[#ffc700]">a six-month Spanish course:</span> Em inglês, o tempo de duração ("six-month") é usado como um adjetivo para descrever o curso, então "month" fica no singular e a frase se une com um hífen.</li>
+                            <li><span class="font-bold text-[#ffc700]">in Engineering / in Colombia:</span> A preposição <span class="article-highlight">"in"</span> é usada tanto para a área de estudo (Engenharia) quanto para a localização geográfica (Colômbia). É a preposição padrão para esses contextos.</li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Banking Advisor -->
+                <div class="p-4 rounded-lg bg-gray-800 border border-gray-700">
+                    <span class="text-lg font-bold text-white">Banking Advisor:</span>
+                    <p class="text-md leading-relaxed text-gray-300 mt-2">
+                        Your background builds trust. Emphasize how your studies gave you a solid understanding of financial principles.
+                    </p>
+                    <p class="text-lg font-bold text-[#ffc700] mt-1">
+                        "I have a Bachelor’s degree in Economics and studied abroad in the UK, which provided me with a strong foundation in global financial markets and investment principles."
+                    </p>
+                    <p class="text-sm italic text-gray-400 mt-1">
+                        (Eu tenho uma graduação em Economia e fiz intercâmbio no Reino Unido, o que me deu uma base sólida em mercados financeiros globais e princípios de investimento.)
+                    </p>
+                </div>
+                 <!-- Lawyer -->
+                 <div class="p-4 rounded-lg bg-gray-800 border border-gray-700">
+                    <span class="text-lg font-bold text-white">Lawyer:</span>
+                    <p class="text-md leading-relaxed text-gray-300 mt-2">
+                        Your educational background is the bedrock of your legal expertise. Highlight how your studies have equipped you with the ability to analyze, interpret, and apply complex legal principles.
+                    </p>
+                    <p class="text-lg font-bold text-[#ffc700] mt-1">
+                        "I earned a Bachelor of Law (LL.B.) and a Master of Laws (LL.M.) in Corporate Law. My education focused on understanding and applying legal frameworks, which is critical for advising clients and ensuring compliance."
+                    </p>
+                    <p class="text-sm italic text-gray-400 mt-1">
+                        (Eu obtive um bacharelado em Direito (LL.B.) e um mestrado em Direito (LL.M.) em Direito Corporativo. Minha formação se concentrou em entender e aplicar estruturas legais, o que é crucial para aconselhar clientes e garantir a conformidade.)
+                    </p>
+                    <div class="mt-4 border-t border-gray-700 pt-4">
+                        <span class="text-lg font-bold text-[#ffc700]">Explaining the Words & Prepositions:</span>
+                        <ul class="list-disc list-inside space-y-2 text-gray-300 mt-2">
+                            <li><span class="font-bold text-[#ffc700]">Bachelor of Law (LL.B.):</span> A forma comum de se referir à graduação em Direito em países de língua inglesa.</li>
+                            <li><span class="font-bold text-[#ffc700]">Master of Laws (LL.M.):</span> A forma comum de se referir ao mestrado em Direito em países de língua inglesa.</li>
+                            <li><span class="font-bold text-[#ffc700]">in Corporate Law:</span> Usamos a preposição <span class="article-highlight">"in"</span> para especificar a área de estudo.</li>
+                        </ul>
+                    </div>
+                </div>
+                 <!-- Accountant -->
+                 <div class="p-4 rounded-lg bg-gray-800 border border-gray-700">
+                    <span class="text-lg font-bold text-white">Accountant:</span>
+                    <p class="text-md leading-relaxed text-gray-300 mt-2">
+                        Your background is essential for demonstrating your analytical skills and attention to detail. Highlight how your studies prepared you to manage financial data and ensure accuracy.
+                    </p>
+                    <p class="text-lg font-bold text-[#ffc700] mt-1">
+                        "I hold a Bachelor’s degree in Accounting and earned a post-graduate certificate in Financial Management. My education has provided me with a solid understanding of financial reporting, auditing, and tax regulations, which are vital for my role."
+                    </p>
+                    <p class="text-sm italic text-gray-400 mt-1">
+                        (Eu tenho uma graduação em Contabilidade e obtive um certificado de pós-graduação em Gestão Financeira. Minha formação me proporcionou uma base sólida em relatórios financeiros, auditoria e regulamentação fiscal, que são vitais para o meu papel.)
+                    </p>
+                    <div class="mt-4 border-t border-gray-700 pt-4">
+                        <span class="text-lg font-bold text-[#ffc700]">Explaining the Words & Prepositions:</span>
+                        <ul class="list-disc list-inside space-y-2 text-gray-300 mt-2">
+                            <li><span class="font-bold text-[#ffc700]">I hold a Bachelor's degree:</span> Uma forma natural e comum de dizer "eu tenho uma graduação".</li>
+                            <li><span class="font-bold text-[#ffc700]">post-graduate certificate:</span> A tradução mais direta para certificado de pós-graduação.</li>
+                            <li><span class="font-bold text-[#ffc700]">in Accounting / in Financial Management:</span> A preposição <span class="article-highlight">"in"</span> é usada para indicar o campo de estudo ou a disciplina.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Starred Sentence Section -->
+            <div class="p-4 mt-6 rounded-lg bg-gray-800 border border-gray-700">
+                <span class="text-lg font-bold text-[#ffc700]">
+                    <i class="fas fa-star text-[#ffc700]"></i> Example:
+                </span>
+                <p class="text-lg leading-relaxed text-gray-300 mt-2">
+                    "I have a Bachelor of Science (B.S.) in Computer Science. In addition to an exchange program in Germany, I also earned a Master's in IT from USP. This combination of a strong technical foundation and a global perspective has equipped me to handle complex software challenges."
+                </p>
+            </div>
+        </section>
+
+        <!-- Practice Time Section -->
+        <section id="practice-time" class="p-6 rounded-xl border-2 border-[#8b5cf6] bg-white bg-opacity-5">
+            <h3 class="text-2xl font-bold mb-4 text-white">Practice Time: Build Your Sentences!</h3>
+            <p class="text-lg leading-relaxed text-gray-200 mb-6">
+                Now it's your turn! Use the phrases you just learned to build sentences that describe your own educational background.
+            </p>
+
+            <!-- Fill in the Blanks Exercise 1 -->
+            <div class="mb-8">
+                <h4 class="text-xl font-bold text-white mb-4">Exercise 1: Fill in the Blanks - Educational Background</h4>
+                <p class="text-lg leading-relaxed text-gray-200 mb-4">
+                    Complete the sentence below with details about your own education.
+                </p>
+                <div class="bg-gray-800 p-6 rounded-lg border border-gray-700">
+                    <div class="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-2">
+                        <span class="text-lg text-white">I</span>
+                        <input type="text" id="fill-verb" placeholder="have / hold / earned" class="bg-gray-700 text-white p-2 rounded-md w-full md:w-48 text-center fill-in-the-blanks-input" />
+                        <span class="text-lg text-white">a degree in</span>
+                        <input type="text" id="fill-major" placeholder="Engineering / Marketing" class="bg-gray-700 text-white p-2 rounded-md w-full md:w-48 text-center fill-in-the-blanks-input" />
+                        <span class="text-lg text-white">from</span>
+                        <input type="text" id="fill-college" placeholder="USP / PUC" class="bg-gray-700 text-white p-2 rounded-md w-full md:w-48 text-center fill-in-the-blanks-input" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fill in the Blanks Exercise 2 -->
+            <div class="mb-8">
+                <h4 class="text-xl font-bold text-white mb-4">Exercise 2: Fill in the Blanks - Specialization</h4>
+                <p class="text-lg leading-relaxed text-gray-200 mb-4">
+                    Describe your specialization or area of focus.
+                </p>
+                <div class="bg-gray-800 p-6 rounded-lg border border-gray-700">
+                    <div class="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-2">
+                        <span class="text-lg text-white">My degree in</span>
+                        <input type="text" id="fill-major-2" placeholder="Computer Science" class="bg-gray-700 text-white p-2 rounded-md w-full md:w-48 text-center fill-in-the-blanks-input" />
+                        <span class="text-lg text-white">gave me a specialization in</span>
+                        <input type="text" id="fill-specialization-2" placeholder="Data Analytics / Digital Strategy" class="bg-gray-700 text-white p-2 rounded-md w-full md:w-48 text-center fill-in-the-blanks-input" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fill in the Blanks Exercise 3 -->
+            <div class="mb-8">
+                <h4 class="text-xl font-bold text-white mb-4">Exercise 3: Fill in the Blanks - Study Abroad</h4>
+                <p class="text-lg leading-relaxed text-gray-200 mb-4">
+                    Share details about a study abroad experience.
+                </p>
+                <div class="bg-gray-800 p-6 rounded-lg border border-gray-700">
+                    <div class="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-2">
+                        <span class="text-lg text-white">I went on an exchange program</span>
+                        <input type="text" id="fill-location-3" placeholder="in Germany" class="bg-gray-700 text-white p-2 rounded-md w-full md:w-48 text-center fill-in-the-blanks-input" />
+                        <span class="text-lg text-white">for</span>
+                        <input type="text" id="fill-duration-3" placeholder="one semester / a year" class="bg-gray-700 text-white p-2 rounded-md w-full md:w-48 text-center fill-in-the-blanks-input" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Drag and Drop Exercise 1 -->
+            <div class="mb-8">
+                <h4 class="text-xl font-bold text-white mb-4">Exercise 4: Drag and Drop - Education</h4>
+                <p class="text-lg leading-relaxed text-gray-200 mb-4">
+                    Build a sentence about a master's degree.
+                </p>
+                <div class="bg-gray-800 p-6 rounded-lg border border-gray-700">
+                    <div class="flex flex-wrap gap-2 mb-6 drag-container" id="drag-container-1">
+                        <div class="draggable p-2 rounded-md bg-[#ffc700] text-[#141414] font-bold" data-word="I have">I have</div>
+                        <div class="draggable p-2 rounded-md bg-[#ffc700] text-[#141414] font-bold" data-word="a Master's">a Master's</div>
+                        <div class="draggable p-2 rounded-md bg-[#ffc700] text-[#141414] font-bold" data-word="in">in</div>
+                        <div class="draggable p-2 rounded-md bg-[#ffc700] text-[#141414] font-bold" data-word="Computer Science">Computer Science</div>
+                        <div class="draggable p-2 rounded-md bg-[#ffc700] text-[#141414] font-bold" data-word="from">from</div>
+                        <div class="draggable p-2 rounded-md bg-[#ffc700] text-[#141414] font-bold" data-word="Harvard">Harvard</div>
+                    </div>
+                    <div class="flex flex-wrap items-center space-x-2 space-y-2 sentence-builder" id="sentence-builder-1">
+                        <div class="dropzone" id="dropzone-1-1"></div>
+                        <div class="dropzone" id="dropzone-1-2"></div>
+                        <div class="dropzone" id="dropzone-1-3"></div>
+                        <div class="dropzone" id="dropzone-1-4"></div>
+                        <div class="dropzone" id="dropzone-1-5"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Drag and Drop Exercise 2 (New) -->
+            <div class="mb-8">
+                <h4 class="text-xl font-bold text-white mb-4">Exercise 5: Drag and Drop - Study Abroad</h4>
+                <p class="text-lg leading-relaxed text-gray-200 mb-4">
+                    Build a sentence about an exchange program.
+                </p>
+                <div class="bg-gray-800 p-6 rounded-lg border border-gray-700">
+                    <div class="flex flex-wrap gap-2 mb-6 drag-container" id="drag-container-2">
+                        <div class="draggable p-2 rounded-md bg-[#ffc700] text-[#141414] font-bold" data-word="I went to study">I went to study</div>
+                        <div class="draggable p-2 rounded-md bg-[#ffc700] text-[#141414] font-bold" data-word="in">in</div>
+                        <div class="draggable p-2 rounded-md bg-[#ffc700] text-[#141414] font-bold" data-word="the United States">the United States</div>
+                        <div class="draggable p-2 rounded-md bg-[#ffc700] text-[#141414] font-bold" data-word="for">for</div>
+                        <div class="draggable p-2 rounded-md bg-[#ffc700] text-[#141414] font-bold" data-word="a year">a year</div>
+                    </div>
+                    <div class="flex flex-wrap items-center space-x-2 space-y-2 sentence-builder" id="sentence-builder-2">
+                        <div class="dropzone" id="dropzone-2-1"></div>
+                        <div class="dropzone" id="dropzone-2-2"></div>
+                        <div class="dropzone" id="dropzone-2-3"></div>
+                        <div class="dropzone" id="dropzone-2-4"></div>
+                        <div class="dropzone" id="dropzone-2-5"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Drag and Drop Exercise 3 (New) -->
+            <div>
+                <h4 class="text-xl font-bold text-white mb-4">Exercise 6: Drag and Drop - Work Experience</h4>
+                <p class="text-lg leading-relaxed text-gray-200 mb-4">
+                    Build a sentence about working as a professional abroad.
+                </p>
+                <div class="bg-gray-800 p-6 rounded-lg border border-gray-700">
+                    <div class="flex flex-wrap gap-2 mb-6 drag-container" id="drag-container-3">
+                        <div class="draggable p-2 rounded-md bg-[#ffc700] text-[#141414] font-bold" data-word="I am going to">I am going to</div>
+                        <div class="draggable p-2 rounded-md bg-[#ffc700] text-[#141414] font-bold" data-word="work">work</div>
+                        <div class="draggable p-2 rounded-md bg-[#ffc700] text-[#141414] font-bold" data-word="abroad">abroad</div>
+                        <div class="draggable p-2 rounded-md bg-[#ffc700] text-[#141414] font-bold" data-word="as a">as a</div>
+                        <div class="draggable p-2 rounded-md bg-[#ffc700] text-[#141414] font-bold" data-word="Project Manager">Project Manager</div>
+                        <div class="draggable p-2 rounded-md bg-[#ffc700] text-[#141414] font-bold" data-word="I successfully managed">I successfully managed</div>
+                        <div class="draggable p-2 rounded-md bg-[#ffc700] text-[#141414] font-bold" data-word="I led a team of">I led a team of</div>
+                        <div class="draggable p-2 rounded-md bg-[#ffc700] text-[#141414] font-bold" data-word="I oversaw the project">I oversaw the project</div>
+                        <div class="draggable p-2 rounded-md bg-[#ffc700] text-[#141414] font-bold" data-word="I was responsible for">I was responsible for</div>
+                        <div class="draggable p-2 rounded-md bg-[#ffc700] text-[#141414] font-bold" data-word="My primary duties included">My primary duties included</div>
+                        <div class="draggable p-2 rounded-md bg-[#ffc700] text-[#141414] font-bold" data-word="I worked on an international project">I worked on an international project</div>
+                        <div class="draggable p-2 rounded-md bg-[#ffc700] text-[#141414] font-bold" data-word="I collaborated with colleagues">I collaborated with colleagues</div>
+                        <div class="draggable p-2 rounded-md bg-[#ffc700] text-[#141414] font-bold" data-word="I developed and implemented">I developed and implemented</div>
+                        <div class="draggable p-2 rounded-md bg-[#ffc700] text-[#141414] font-bold" data-word="I was tasked with">I was tasked with</div>
+                        <div class="draggable p-2 rounded-md bg-[#ffc700] text-[#141414] font-bold" data-word="My role entailed">My role entailed</div>
+                    </div>
+                    <div class="flex flex-wrap items-center space-x-2 space-y-2 sentence-builder" id="sentence-builder-3">
+                        <div class="dropzone" id="dropzone-3-1"></div>
+                        <div class="dropzone" id="dropzone-3-2"></div>
+                        <div class="dropzone" id="dropzone-3-3"></div>
+                        <div class="dropzone" id="dropzone-3-4"></div>
+                        <div class="dropzone" id="dropzone-3-5"></div>
+                        <div class="dropzone" id="dropzone-3-6"></div>
+                        <div class="dropzone" id="dropzone-3-7"></div>
+                        <div class="dropzone" id="dropzone-3-8"></div>
+                        <div class="dropzone" id="dropzone-3-9"></div>
+                        <div class="dropzone" id="dropzone-3-10"></div>
+                        <div class="dropzone" id="dropzone-3-11"></div>
+                        <div class="dropzone" id="dropzone-3-12"></div>
+                        <div class="dropzone" id="dropzone-3-13"></div>
+                        <div class="dropzone" id="dropzone-3-14"></div>
+                        <div class="dropzone" id="dropzone-3-15"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Drag and Drop Exercise for Job Interview Questions -->
+            <div class="mb-8">
+                <h4 class="text-xl font-bold text-white mb-4">Exercise 7: Drag and Drop - Interview Questions</h4>
+                <p class="text-lg leading-relaxed text-gray-200 mb-4">
+                    Build a question you would ask at the end of an interview.
+                </p>
+                <div class="bg-gray-800 p-6 rounded-lg border border-gray-700">
+                    <div class="flex flex-wrap gap-2 mb-6 drag-container" id="drag-container-4">
+                        <div class="draggable p-2 rounded-md bg-[#ffc700] text-[#141414] font-bold" data-word="What">What</div>
+                        <div class="draggable p-2 rounded-md bg-[#ffc700] text-[#141414] font-bold" data-word="are the">are the</div>
+                        <div class="draggable p-2 rounded-md bg-[#ffc700] text-[#141414] font-bold" data-word="biggest">biggest</div>
+                        <div class="draggable p-2 rounded-md bg-[#ffc700] text-[#141414] font-bold" data-word="challenges">challenges</div>
+                        <div class="draggable p-2 rounded-md bg-[#ffc700] text-[#141414] font-bold" data-word="facing">facing</div>
+                        <div class="draggable p-2 rounded-md bg-[#ffc700] text-[#141414] font-bold" data-word="the team">the team</div>
+                        <div class="draggable p-2 rounded-md bg-[#ffc700] text-[#141414] font-bold" data-word="right now">right now</div>
+                    </div>
+                    <div class="flex flex-wrap items-center space-x-2 space-y-2 sentence-builder" id="sentence-builder-4">
+                        <div class="dropzone" id="dropzone-4-1"></div>
+                        <div class="dropzone" id="dropzone-4-2"></div>
+                        <div class="dropzone" id="dropzone-4-3"></div>
+                        <div class="dropzone" id="dropzone-4-4"></div>
+                        <div class="dropzone" id="dropzone-4-5"></div>
+                        <div class="dropzone" id="dropzone-4-6"></div>
+                        <div class="dropzone" id="dropzone-4-7"></div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="text-center mt-6">
+                <button id="check-answers-btn" class="bg-[#ffc700] text-[#141414] font-bold py-3 px-8 rounded-full hover:bg-white transition-colors duration-300">
+                    Check My Answers
+                </button>
+            </div>
+            
+            <div id="feedback" class="mt-4 p-4 rounded-lg text-lg hidden"></div>
+        </section>
+
+        <!-- Updated Section: Work Experience Block -->
+        <section class="content-block relative p-6 rounded-xl bg-gray-900 bg-opacity-70 content-block-orange content-block-hover-orange">
+            <h3 class="text-2xl font-bold mb-4 text-white">Speaking About Your Work Experience</h3>
+            <p class="text-lg leading-relaxed text-gray-200 mb-6">
+                <span class="font-bold text-[#ffc700]">[POR]</span> Quando você tem uma carreira longa, o segredo é não listar tudo, mas sim <span class="article-highlight">contar uma história de crescimento</span>. Use blocos de palavras para mostrar sua progressão.
+            </p>
+            <p class="text-lg leading-relaxed text-gray-200 mb-6">
+                <span class="font-bold text-[#ffc700]">[ENG]</span> When you have a long career, the secret is not to list everything, but rather to **tell a story of growth.** Use word blocks to show your progression.
+            </p>
+
+            <div class="space-y-6">
+                <!-- Word Block for Career Progression -->
+                <div class="p-4 rounded-lg bg-gray-800 border border-gray-700">
+                    <span class="text-lg font-bold text-white">Career Progression Phrases</span>
+                    <p class="text-md leading-relaxed text-gray-300 mt-2">
+                        <span class="font-bold text-[#ffc700]">[POR]</span> Use estas frases para falar sobre sua trajetória e crescimento profissional.
+                        <br>
+                        <span class="font-bold text-[#ffc700]">[ENG]</span> Use these phrases to talk about your career path and professional growth.
+                    </p>
+                    <div class="word-block mt-4">
+                        <div class="word-block-item">I have 10 years of experience</div>
+                        <div class="word-block-item">I climbed up the career ladder</div>
+                        <div class="word-block-item">I started as a System Analyst</div>
+                        <div class="word-block-item">I joined the company as an intern</div>
+                        <div class="word-block-item">I've worked my way up from a Project Manager to a Director</div>
+                        <div class="word-block-item">I transitioned into a Director role</div>
+                        <div class="word-block-item">I lead a team of 15 people</div>
+                        <div class="word-block-item">I am currently a senior manager</div>
+                    </div>
+                </div>
+
+                <!-- Word Block for Achievements and Responsibilities -->
+                <div class="p-4 rounded-lg bg-gray-800 border border-gray-700">
+                    <span class="text-lg font-bold text-white">Achievement & Responsibility Phrases</span>
+                    <p class="text-md leading-relaxed text-gray-300 mt-2">
+                        <span class="font-bold text-[#ffc700]">[POR]</span> Use estas frases para falar sobre o que você fez e quais foram suas responsabilidades.
+                        <br>
+                        <span class="font-bold text-[#ffc700]">[ENG]</span> Use these phrases to talk about what you did and what your responsibilities were.
+                    </p>
+                    <div class="word-block mt-4">
+                        <div class="word-block-item">I was responsible for...</div>
+                        <div class="word-block-item">My key responsibilities included...</div>
+                        <div class="word-block-item">I was instrumental in...</div>
+                        <div class="word-block-item">I successfully delivered...</div>
+                        <div class="word-block-item">I oversaw the implementation of...</div>
+                        <div class="word-block-item">I managed a diverse portfolio of projects</div>
+                        <div class="word-block-item">I focused on strategic planning</div>
+                        <div class="word-block-item">I guided the company's expansion</div>
+                        <div class="word-block-item">My duties included...</div>
+                        <div class="word-block-item">I was tasked with...</div>
+                        <div class="word-block-item">I am in charge of...</div>
+                        <div class="word-block-item">My role entailed...</div>
+                        <div class="word-block-item">I took on the responsibility of...</div>
+                    </div>
+                </div>
+            
+                <!-- Word Block for Abroad Experience -->
+                <div class="p-4 rounded-lg bg-gray-800 border border-gray-700">
+                    <span class="text-lg font-bold text-white">Working Abroad Phrases</span>
+                    <p class="text-md leading-relaxed text-gray-300 mt-2">
+                        <span class="font-bold text-[#ffc700]">[POR]</span> Use estas frases para descrever sua experiência profissional no exterior.
+                        <br>
+                        <span class="font-bold text-[#ffc700]">[ENG]</span> Use these phrases to describe your professional experience abroad.
+                    </p>
+                    <div class="word-block mt-4">
+                        <div class="word-block-item">I had the opportunity to work abroad</div>
+                        <div class="word-block-item">I worked in London for two years</div>
+                        <div class="word-block-item">This experience gave me a deep understanding of...</div>
+                        <div class="word-block-item">I gained global business experience</div>
+                        <div class="word-block-item">It provided me with a high level of adaptability</div>
+                        <div class="word-block-item">I led a multinational team</div>
+                        <div class="word-block-item">I am experienced in diverse work environments</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- New Section: Expressing Your Opinion -->
+        <section class="content-block relative p-6 rounded-xl bg-gray-900 bg-opacity-70 content-block-teal content-block-hover-teal">
+            <h3 class="text-2xl font-bold mb-4 text-white">Expressing Your Opinion in a Meeting</h3>
+            <p class="text-lg leading-relaxed text-gray-200 mb-2">
+                <span class="font-bold text-[#ffc700]">[POR]</span> Em reuniões profissionais, é crucial expressar suas ideias de forma clara e respeitosa. Em português, podemos usar "eu acho que", mas no inglês profissional é melhor usar frases mais fortes. A chave é a <span class="article-highlight">assertividade</span> sem parecer agressivo.
+            </p>
+            <p class="text-lg leading-relaxed text-gray-200 mb-4">
+                <span class="font-bold text-[#ffc700]">[ENG]</span> In professional meetings, it's essential to express your ideas clearly and respectfully. While you might use "eu acho que" in Portuguese, professional English uses stronger phrases. The key is to be <span class="article-highlight">assertive</span> without sounding aggressive.
+            </p>
+            <div class="space-y-6">
+                <!-- Phrases for Expressing Opinion -->
+                <div class="p-4 rounded-lg bg-gray-800 border border-gray-700">
+                    <span class="text-lg font-bold text-white">Phrases for Expressing Opinion</span>
+                    <p class="text-md leading-relaxed text-gray-300 mt-2">
+                        <span class="font-bold text-[#ffc700]">[POR]</span> Use estas frases para expressar sua opinião de forma educada e profissional.
+                        <br>
+                        <span class="font-bold text-[#ffc700]">[ENG]</span> Use these phrases to express your opinion in a polite and professional way.
+                    </p>
+                    <ul class="list-disc list-inside space-y-2 text-gray-300 mt-2">
+                        <li><span class="font-bold text-[#14b8a6]">I believe that...</span> (Eu acredito que...)</li>
+                        <li><span class="font-bold text-[#14b8a6]">In my opinion...</span> (Na minha opinião...)</li>
+                        <li><span class="font-bold text-[#14b8a6]">I'd like to suggest that...</span> (Eu gostaria de sugerir que...)</li>
+                        <li><span class="font-bold text-[#14b8a6]">From my perspective...</span> (Da minha perspectiva...)</li>
+                        <li><span class="font-bold text-[#14b8a6]">I feel strongly about this because...</span> (Eu sinto fortemente sobre isso porque...)</li>
+                        <li><span class="font-bold text-[#14b8a6]">It seems to me that...</span> (Parece-me que...)</li>
+                        <li><span class="font-bold text-[#14b8a6]">I'm of the opinion that...</span> (Eu sou da opinião de que...)</li>
+                        <li><span class="font-bold text-[#14b8a6]">If you ask me...</span> (Se você me perguntar...)</li>
+                        <li><span class="font-bold text-[#14b8a6]">The way I see it...</span> (Do jeito que eu vejo...)</li>
+                        <li><span class="font-bold text-[#14b8a6]">My view on this is that...</span> (Minha opinião sobre isso é que...)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Additional Info-Block Section -->
+        <section class="p-6 rounded-xl border-2 border-[#ffc700] bg-white bg-opacity-5">
+            <h4 class="text-xl font-bold text-[#ffc700] mb-2">Pro Tip</h4>
+            <p class="text-lg leading-relaxed text-gray-200">
+                Record yourself speaking and listen back. This is one of the most effective ways to identify areas for improvement in your pronunciation and flow. It helps you catch habits you didn't even know you had!
+            </p>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- Drag and Drop Functionality ---
+            const allDraggables = document.querySelectorAll('.draggable');
+            const allDropzones = document.querySelectorAll('.dropzone');
+
+            let selectedWord = null;
+
+            allDraggables.forEach(draggable => {
+                draggable.addEventListener('click', () => {
+                    // Deselect any previously selected word in the same container
+                    const parentContainer = draggable.closest('.drag-container');
+                    if (parentContainer) {
+                        const previousSelected = parentContainer.querySelector('.bg-red-500');
+                        if (previousSelected) {
+                            previousSelected.classList.remove('bg-red-500', 'text-white');
+                            previousSelected.classList.add('bg-[#ffc700]', 'text-[#141414]');
+                        }
+                    }
+
+                    // Set the new selected word
+                    selectedWord = draggable;
+                    selectedWord.classList.add('bg-red-500', 'text-white');
+                    selectedWord.classList.remove('bg-[#ffc700]', 'text-[#141414]');
+                });
+            });
+
+            allDropzones.forEach(dropzone => {
+                dropzone.addEventListener('click', () => {
+                    if (selectedWord && dropzone.closest('.sentence-builder') === selectedWord.closest('.sentence-builder')) {
+                        const existingWord = dropzone.querySelector('.draggable');
+                        if (existingWord) {
+                            const dragContainer = selectedWord.closest('.drag-container');
+                            if (dragContainer) {
+                                dragContainer.appendChild(existingWord);
+                                existingWord.classList.remove('bg-red-500', 'text-white', 'filled-dropzone');
+                                existingWord.classList.add('bg-[#ffc700]', 'text-[#141414]');
+                            }
+                        }
+                        
+                        // Place the selected word in the dropzone
+                        dropzone.appendChild(selectedWord);
+                        selectedWord.classList.remove('bg-red-500', 'text-white');
+                        selectedWord.classList.add('filled-dropzone');
+                        selectedWord = null;
+                    }
+                });
+            });
+
+            // --- Check Answers Button Logic ---
+            const checkAnswersBtn = document.getElementById('check-answers-btn');
+            const feedbackDiv = document.getElementById('feedback');
+            
+            checkAnswersBtn.addEventListener('click', () => {
+                let allCorrect = true;
+                const feedbackMessages = [];
+                
+                // --- Fill in the Blanks Validation ---
+                const fillInputs = document.querySelectorAll('.fill-in-the-blanks-input');
+                let fillInputsCorrect = true;
+                fillInputs.forEach(input => {
+                    if (input.value.trim().length === 0) {
+                        fillInputsCorrect = false;
+                    }
+                });
+
+                if (fillInputsCorrect) {
+                    feedbackMessages.push('<i class="fas fa-check-circle correct-answer"></i> Great job on the fill-in-the-blanks! The sentence structures look correct.');
+                } else {
+                    feedbackMessages.push('<i class="fas fa-times-circle incorrect-answer"></i> Please fill in all the blanks in the "Fill in the Blanks" exercises to check your answers.');
+                    allCorrect = false;
+                }
+                
+                // --- Drag and Drop Validation for all exercises ---
+                const sentenceBuilders = document.querySelectorAll('.sentence-builder');
+                sentenceBuilders.forEach((builder, index) => {
+                    const dropzones = builder.querySelectorAll('.dropzone');
+                    const wordsUsed = Array.from(dropzones).filter(zone => zone.children.length === 1);
+                    
+                    if (wordsUsed.length === dropzones.length) {
+                        feedbackMessages.push(`<i class="fas fa-check-circle correct-answer"></i> Your drag-and-drop sentence #${index + 4} is perfectly structured!`);
+                    } else {
+                        feedbackMessages.push(`<i class="fas fa-times-circle incorrect-answer"></i> It looks like you\'re missing some pieces in your drag-and-drop sentence #${index + 4}. Make sure you use all the words to complete it.`);
+                        allCorrect = false;
+                    }
+                });
+                
+                // --- Display Feedback ---
+                feedbackDiv.innerHTML = feedbackMessages.join('<br>');
+                feedbackDiv.classList.remove('hidden', 'correct-answer', 'incorrect-answer');
+                
+                if (allCorrect && fillInputsCorrect) {
+                    feedbackDiv.classList.add('bg-gray-700', 'bg-opacity-50', 'text-green-400');
+                } else {
+                    feedbackDiv.classList.add('bg-gray-700', 'bg-opacity-50', 'text-red-400');
+                }
+                
+                feedbackDiv.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html>
